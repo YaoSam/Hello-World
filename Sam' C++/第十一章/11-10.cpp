@@ -66,7 +66,7 @@ int main()//我是呆萌哒妹函数~
 	}
 	Re(i, str.length())
 		wcout << str[i - 1] << ": " << Count[i - 1] << '\t';
-	cout << endl;
+	//Just have fun!!!
 #ifndef DEBUG 
 	printf("\n");
 	system("pause");	//加个断点。
