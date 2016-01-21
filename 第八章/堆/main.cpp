@@ -27,7 +27,7 @@
 #include <time.h>
 #include "Bag.h"
 using namespace std;
-
+///test to git
 //#define DEBUG //用来确定是否文本输出。
 #undef re
 #define re(i,n) for(unsigned int i=0;i<n;i++)
