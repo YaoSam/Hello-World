@@ -4,7 +4,7 @@
 *　　　　　　　┏┛┻━━━┛┻┓ + +
 *　　　　　　　┃　　　　　　  ┃ 　
 *　　　　　　　┃　　　━　　　┃ ++ + + +
-*　　　　			 |   ███━███    ┃+
+*　　　　	   |   ███━███   ┃+
 *　　　　　　　┃　　　　　　  ┃ +
 *　　　　　　　┃　　　┻　　　┃
 *　　　　　　　┃　　　　　　  ┃ + +
@@ -26,6 +26,7 @@
 #include <iostream>
 #include <sstream>	//用于将输出转化为字符串
 #include <iomanip> //用于格式化输入输出。float转化成字符串
+#include <omp.h>
 #include <string>
 #define Re(i,n)	for(int i=1;i<=n;++i)
 const int ten[5] = { 0, 1, 10, 100, 1000 };		//用来进位的
@@ -33,6 +34,16 @@ class N; class Z; class Q; class R;
 typedef Z Int;
 typedef R Float;
 using namespace std;
+
+void debug(std::string warning)
+{
+	std::cout << warning << std::endl;
+	std::cout << "This program is closing"<<std::endl;
+	system("pause");
+	exit(1);
+}
+
+
 //以下为一大堆模板。因为+=，-=，*=，/=... ...都依赖于那一类的+-*/的重载。
 //平时x=的操作效率应该要高一点... ...因为但是这里没有对this进行精细的操作，所以会重新创建对象，效率会略低。
 template <typename T>		T &operator+=(T &This, T const &num)				{ This = This + num; return This; }
@@ -75,9 +86,12 @@ class N  //自然数，大于零。
 {
 	int  *num;
 	int length;	//代表长度. 四位进一。从num[1]-num[length]		
-	int CheckLen(int max);	//检测长度
+	//检测并更新length
+	int CheckLen(int max);	
+	/*自身除2。还可以用来优化100一下的除法。*/
 	N &half();
-	int *Space( int const &n)const; //用来申请已经清零的空间
+	/*用来申请已经清零的空间为除法服务*/
+	int *Space( int const &n)const;
 public:
 	N() :length(1), num(Space(5)){}
 	N(std::string str);
@@ -96,10 +110,13 @@ public:
 	N operator/(N const &other)const;
 	N operator%(N const &other)const;
 	N &operator*=(N const &other);
+	/*向左位移M位 面向运气式编程*/
 	N &operator>>=(int movement);
-	int operator[](int const &x)const	/*读取某一位的数字*/{ return (num[(x-1) / 4+1] / ten[(x+3) % 4 + 1]) % 10; }//只返回值不返回数字。
-	int getdigit()const;							//读取整个数字的位数
-	friend void Swap(N &a, N &b);		//直接修改地址。
+	/*读取某一位的数字，只返回值不返回引用*/
+	int operator[](int const &x)const	{ return (num[(x-1) / 4+1] / ten[(x+3) % 4 + 1]) % 10; }
+	/*读取整个数字的位数*/
+	int getdigit()const;	
+	friend void Swap(N &a, N &b);		
 };
 N::N(std::string str)
 {
@@ -152,7 +169,7 @@ std::ostream &operator<<(std::ostream &out, N const &This)
 	{
 		if (i != 1)
 		{
-			if (This.num[This.length - i + 1] < 10)				out << "000";
+			if (This.num[This.length - i + 1] < 10)					out << "000";
 			else if (This.num[This.length - i + 1] < 100)			out << "00";
 			else if (This.num[This.length - i + 1] < 1000)		out << 0;
 		}
@@ -203,11 +220,11 @@ int N::CheckLen( int max)
 	return length;
 }
 
-int *N::Space( int const &n)const	//用来申请已经清零的空间
+int *N::Space( int const &n)const	
 {
-	if (n <= 0){ cout << "WTF!!!You apply Negitive memory?!" << endl; system("pause"); exit(1); } //申请长度为负数。报错一下
+	if (n <= 0)			debug("WTF!!!You apply Negitive memory?!");//申请长度为负数。报错一下
 	int *p = new int[n];
-	if (p == NULL)	{ cout << "Sorry. I fail to apply memory... ..." << endl; system("pause"); exit(1); }	//申请内存出错报一下。
+	if (p == NULL)	debug("Sorry. I fail to apply memory... ...");	//申请内存出错报一下。
 	memset(p, 0, sizeof(int)*n);		//清零。CheckLen的时候方便。
 	return p;
 }
@@ -221,16 +238,15 @@ N &N::operator+=(N const &other)	//通过更细致的操作来优化效率。
 		delete[] tempnum; //有intspace的地方就有delete。
 	}
 	int max = length > other.length ? length : other.length;
-	Re(i, max)	
-	{
-		if(i<=other.length)		
-			num[i] += other.num[i];
-		if (num[i] >= 10000) //必须紧接着进位。
+#pragma omp parallel for
+	Re(i, other.length)
+		num[i] += other.num[i];
+	Re(i, max)
+		if (num[i] >= 10000)
 		{
-			++num[i + 1]; //加法只需进入1
-			num[i] %= 10000;
+			++num[i + 1];
+			num[i]%=10000;
 		}
-	}
 	CheckLen(max + 1);
 	return *this;
 }
@@ -241,24 +257,24 @@ N N::operator+(N const &other)const
 }
 N &N::operator-=(N const &other)
 {
-	if (*this < other) std::cout << "Well, I'm a N number. I can't be negetive. I just can't." << std::endl; //自然数的减法，不能出现负数。
+	if (*this < other)		debug("Well, I'm a N number. I can't be negetive. I just can't."); //自然数的减法，不能出现负数。
 	else if (*this == other) *this = N(0);
 	else
 	{
+#pragma omp parallel for
+		Re(i, other.length)
+			num[i] -= other.num[i];
 		Re(i, length)
-		{
-			if (i <= other.length)		
-				num[i] -= other.num[i];
-			if (num[i] < 0)//进位
+			if (num[i] < 0)
 			{
-				--num[i + 1]; 
+				--num[i + 1];
 				num[i] += 10000;
 			}
-		}
 		CheckLen(length);
 	}
 	return *this;
 }
+
 N N::operator-(N const &other)const
 {
 	N temp(*this);
@@ -269,25 +285,26 @@ N N::operator-(N const &other)const
 N N::operator*(N const &other)const
 {
 	int max = length + other.length + 1;
-	N ans;									//用来存储答案。
-	delete[] ans.num;					//释放内存
-	ans.num = Space(max + 5);	//这里和等于号不一样了。
+	N ans;										//用来存储答案。
+	delete[] ans.num;						//释放内存
+	ans.num = Space(max + 5);		//这里和等于号不一样了。
 	Re(i, length)
 		if (num[i] != 0)						//稍微提高一点效率。
-			Re(j, other.length)					//这里也可以拆分为两个循环并行操作,可惜效率太低。
-				if (other.num[j] != 0)
+		{
+#pragma omp parallel for
+			Re(j, other.length)				//这里也可以拆分为两个循环并行操作,可惜效率太低。
+				ans.num[i + j - 1] += num[i] * other.num[j];
+			Re(j, other.length)
+				if (ans.num[i + j - 1] >= 10000)					//必须及时进位防止溢出。
 				{
-					ans.num[i + j - 1] += num[i] * other.num[j];
-					if (ans.num[i + j - 1] >= 10000)					//必须及时进位防止溢出。
-					{
-						ans.num[i + j] += ans.num[i + j - 1] / 10000;
-						ans.num[i + j - 1] %= 10000;					//0... ...MAX
-					}
+					ans.num[i + j] += ans.num[i + j - 1] / 10000;
+					ans.num[i + j - 1] %= 10000;					//0... ...MAX
 				}
+		}
 	ans.CheckLen(max);
 	return ans; //返回时要申请一次空间。
 }
-//*=还是要申请两次空间。效率其实差不多。
+//*=还是要申请两次空间。效率其实和直接*差不多。
 N &N::operator*=(N const &other) 
 {
 	N temp(*this);
@@ -306,11 +323,12 @@ N &N::operator*=(N const &other)
 						num[i + j - 1] %= 10000;
 					}
 				}
+
 	CheckLen(max);
 	return *this; 
 }
 
-N &N::half() //将自己二分，为除法服务。
+N &N::half() //为除法服务。
 {
 	if (*this == 1)	return *this;
 	else
@@ -348,14 +366,14 @@ N N::operator%(N const &other)const //求模,只是简单的修改了一下/的返回值。
 	}
 	return *this - sum;
 }
-//有friend 就是如此的强大。
+/*交换两个数字直接修改地址。有friend 就是如此的强大。*/
 void Swap(N &a, N &b)  
 {
 	Swap(a.num, b.num);
 	Swap(a.length, b.length);
 }
-//面向运气式编程
-N &N::operator>>=(int movement)
+
+N &N::operator>>=(int movement) 
 {
 	if (movement == 0)	return *this;
 	int big = movement / 4, small = movement % 4;
@@ -497,11 +515,7 @@ Z Z::operator/(Z const &other)const
 }
 Z Z::operator%(Z const &other)const
 {
-	if (other == Z())
-	{
-		std::cout << "分母不能为零" << std::endl;
-		return Z();
-	}
+	if (other == Z())	debug( "分母不能为零" );
 	Z temp;
 	temp.num = num% other.num;
 	if (temp.num == N())		temp.sign = 0;
@@ -578,10 +592,7 @@ public:
 Q::Q(Z one, Z two = 1)
 {
 	if (two == Z(0))
-	{
-		std::cout << "分母不能为零" << std::endl;
-		up = Z(0), down = Z(1);
-	}
+		debug("分母不能为零");
 	else
 	{
 		Z GCD = gcd(one, two);
@@ -598,10 +609,7 @@ Q::Q(Z one, Z two = 1)
 Q::Q(N one, N two = 1)
 {
 	if (two == N())
-	{
-		std::cout << "除数不能为零" << std::endl;
-		up = Z(0), down = Z(1);
-	}
+		debug("除数不能为零");
 	else
 	{
 		N GCD = gcd(one, two);
@@ -613,11 +621,7 @@ Q::Q(int const &other) :up(Z(other)), down(1){}
 Q::Q(int one = 0, int two = 1)
 {
 	if (two == 0)
-	{
-		std::cout << "除数不能为零" << std::endl;
-		up = Z(0), down = Z(1);
-		return;
-	}
+		debug("除数不能为零");
 	up = Z(one / gcd(one, two));
 	down = Z(two / gcd(one, two));
 }
@@ -645,10 +649,13 @@ public:
 	R &operator=(N const &other)				{ num = other, point = 0; }
 	bool operator>(R const &other)	const;
 	bool operator==(R const &other)	const;
-	R operator +(R  const &other)		const; 	//补齐小数点再运算
-	R operator - (R const &other)		const;	//补齐小数点再运算
-	R operator *(R const &other)			const;	//小数点单独运算。
-	R operator/(R const &other)			const;	//牛顿迭代法
+	//补齐小数点再运算
+	R operator +(R  const &other)		const; 
+	R operator - (R const &other)		const;	
+	//小数点单独运算。
+	R operator *(R const &other)			const;	
+	//牛顿迭代法
+	R operator/(R const &other)			const;	
 	R &operator*=(R const &other)		{ num *= other.num;		point += other.point; return *this; }
 	R &operator>>=(int movement)	{ num >>= movement; point -= movement; return *this; }
 };

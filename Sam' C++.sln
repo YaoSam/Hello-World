@@ -1,0 +1,54 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Sam' C++", "Sam' C++\Sam' C++.vcxproj", "{E692D6FE-AC65-4F8A-B999-93F2DAEDF72B}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Run", "Run\Run.vcxproj", "{E12D8DBC-6641-4AED-BBA6-2CFBB2283575}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D65D4B9E-01CB-4262-B853-0AD904DA9FB1}"
+	ProjectSection(SolutionItems) = preProject
+		Performance1.psess = Performance1.psess
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "C++ with Matlab", "C++ with Matlab\C++ with Matlab.vcxproj", "{2A5CC10B-E518-4738-A78D-769741A72D17}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Debug|x64 = Debug|x64
+		Release|Win32 = Release|Win32
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E692D6FE-AC65-4F8A-B999-93F2DAEDF72B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{E692D6FE-AC65-4F8A-B999-93F2DAEDF72B}.Debug|Win32.Build.0 = Debug|Win32
+		{E692D6FE-AC65-4F8A-B999-93F2DAEDF72B}.Debug|x64.ActiveCfg = Debug|Win32
+		{E692D6FE-AC65-4F8A-B999-93F2DAEDF72B}.Debug|x64.Build.0 = Debug|Win32
+		{E692D6FE-AC65-4F8A-B999-93F2DAEDF72B}.Release|Win32.ActiveCfg = Release|Win32
+		{E692D6FE-AC65-4F8A-B999-93F2DAEDF72B}.Release|Win32.Build.0 = Release|Win32
+		{E692D6FE-AC65-4F8A-B999-93F2DAEDF72B}.Release|x64.ActiveCfg = Release|Win32
+		{E12D8DBC-6641-4AED-BBA6-2CFBB2283575}.Debug|Win32.ActiveCfg = Debug|Win32
+		{E12D8DBC-6641-4AED-BBA6-2CFBB2283575}.Debug|Win32.Build.0 = Debug|Win32
+		{E12D8DBC-6641-4AED-BBA6-2CFBB2283575}.Debug|x64.ActiveCfg = Debug|Win32
+		{E12D8DBC-6641-4AED-BBA6-2CFBB2283575}.Debug|x64.Build.0 = Debug|Win32
+		{E12D8DBC-6641-4AED-BBA6-2CFBB2283575}.Release|Win32.ActiveCfg = Release|Win32
+		{E12D8DBC-6641-4AED-BBA6-2CFBB2283575}.Release|Win32.Build.0 = Release|Win32
+		{E12D8DBC-6641-4AED-BBA6-2CFBB2283575}.Release|x64.ActiveCfg = Release|Win32
+		{2A5CC10B-E518-4738-A78D-769741A72D17}.Debug|Win32.ActiveCfg = Debug|Win32
+		{2A5CC10B-E518-4738-A78D-769741A72D17}.Debug|Win32.Build.0 = Debug|Win32
+		{2A5CC10B-E518-4738-A78D-769741A72D17}.Debug|x64.ActiveCfg = Debug|x64
+		{2A5CC10B-E518-4738-A78D-769741A72D17}.Debug|x64.Build.0 = Debug|x64
+		{2A5CC10B-E518-4738-A78D-769741A72D17}.Release|Win32.ActiveCfg = Release|Win32
+		{2A5CC10B-E518-4738-A78D-769741A72D17}.Release|Win32.Build.0 = Release|Win32
+		{2A5CC10B-E518-4738-A78D-769741A72D17}.Release|x64.ActiveCfg = Release|x64
+		{2A5CC10B-E518-4738-A78D-769741A72D17}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
+	EndGlobalSection
+EndGlobal

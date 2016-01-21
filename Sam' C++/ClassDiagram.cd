@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="node&lt;T&gt;">
+    <Position X="6.5" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQAAAAAAAABAAAAAAAAAAAEAAAAAAAIAAAAQAAIAAAA=</HashCode>
+      <FileName>第九章\9-5_6 Node\List.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OrderList&lt;T&gt;">
+    <Position X="0.5" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAQAAAAEAA=</HashCode>
+      <FileName>第九章\9-5_6 Node\List.h</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="mylist" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="list&lt;T&gt;">
+    <Position X="3.25" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AEAgAgAEAJAAAAAABECAKQACAAAQAAAQgAHwAEIIQAA=</HashCode>
+      <FileName>第九章\9-5_6 Node\List.h</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="front" />
+      <Field Name="Current" />
+      <Field Name="Pre" />
+      <Field Name="rear" />
+    </ShowAsAssociation>
+  </Class>
+  <Font Name="微软雅黑 Light" Size="10" />
+</ClassDiagram>
